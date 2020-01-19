@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+    phabricator:
+        build: ./
+        image: d0niek/nextcloud
+        restart: always
+        ports:
+            - "127.0.0.1:8889:80"
+        volumes:
+            - ./nextcloud:/var/www/html
+            - ./apps:/var/www/html/custom_apps
+            - ./config:/var/www/html/config
+            - ./data:/var/www/html/data

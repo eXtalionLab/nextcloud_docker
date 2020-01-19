@@ -1,0 +1,7 @@
+
+/apps/*
+/config/*
+/data/*
+/nextcloud/*
+
+.env

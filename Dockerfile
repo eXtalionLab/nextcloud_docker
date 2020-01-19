@@ -1,0 +1,1 @@
+FROM nextcloud:stable
