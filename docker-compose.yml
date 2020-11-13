@@ -12,3 +12,18 @@ services:
             - ./apps:/var/www/html/custom_apps
             - ./config:/var/www/html/config
             - ./data:/var/www/html/data
+        environment:
+            - "NEXTCLOUD_TRUSTED_DOMAINS=cloud.d0niek.pl office.d0niek.pl"
+
+    collabora:
+        image: collabora/code
+        environment:
+            - "username=root"
+            - "password=BIUgIT78G6rFF6FYVgfF"
+            - "domain=cloud.d0niek.pl"
+            - "server_name=office.d0niek.pl"
+        restart: always
+        ports:
+            - "127.0.0.1:9980:9980"
+        cap_add:
+            - MKNOD
