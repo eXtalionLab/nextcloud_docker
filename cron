@@ -1,0 +1,10 @@
+#!/bin/bash
+
+root_path=$(dirname $(realpath "$0"))
+
+/usr/local/bin/docker-compose -f "${root_path}/docker-compose.yml" \
+    run \
+        --rm \
+        --user www-data \
+        nextcloud \
+            php -f /var/www/html/cron.php
