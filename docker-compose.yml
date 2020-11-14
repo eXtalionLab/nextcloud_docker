@@ -12,7 +12,13 @@ services:
             - ./config:/var/www/html/config
             - ./data:/var/www/html/data
         environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
+            - MYSQL_HOST=db
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}
+            - MYSQL_USER=${MYSQL_USER:-nextcloud}
             - "NEXTCLOUD_TRUSTED_DOMAINS=cloud.d0niek.pl office.d0niek.pl"
+        depends_on:
+            - db
 
     cron:
         image: docker-hub.extalion.com/extalion/nextcloud
@@ -23,6 +29,21 @@ services:
             - ./config:/var/www/html/config
             - ./data:/var/www/html/data
         entrypoint: /cron.sh
+        depends_on:
+            - db
+
+    db:
+        image: mariadb:10.4
+        command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+        restart: always
+        volumes:
+            - ./db:/var/lib/mysql
+            - ./initdb:/docker-entrypoint-initdb.d
+        environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set or empty}
+            - MYSQL_USER=${MYSQL_USER:-nextcloud}
 
     collabora:
         image: collabora/code

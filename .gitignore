@@ -1,7 +1,10 @@
 
 /apps/*
+/backup/*
 /config/*
 /data/*
+/db/*
+/initdb/*
 /nextcloud/*
 
 .env
