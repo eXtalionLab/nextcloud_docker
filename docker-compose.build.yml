@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+    nextcloud:
+        build:
+            context: .
+        image: docker-hub.extalion.com/extalion/nextcloud

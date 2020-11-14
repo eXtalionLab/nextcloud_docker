@@ -2,8 +2,7 @@ version: '3'
 
 services:
     nextcloud:
-        build: ./
-        image: d0niek/nextcloud
+        image: docker-hub.extalion.com/extalion/nextcloud
         restart: always
         ports:
             - "127.0.0.1:8889:80"
@@ -16,8 +15,7 @@ services:
             - "NEXTCLOUD_TRUSTED_DOMAINS=cloud.d0niek.pl office.d0niek.pl"
 
     cron:
-        build: ./
-        image: d0niek/nextcloud
+        image: docker-hub.extalion.com/extalion/nextcloud
         restart: always
         volumes:
             - ./nextcloud:/var/www/html
@@ -25,8 +23,6 @@ services:
             - ./config:/var/www/html/config
             - ./data:/var/www/html/data
         entrypoint: /cron.sh
-        depends_on:
-            - nextcloud
 
     collabora:
         image: collabora/code
