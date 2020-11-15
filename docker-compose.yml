@@ -16,9 +16,12 @@ services:
             - MYSQL_HOST=db
             - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}
             - MYSQL_USER=${MYSQL_USER:-nextcloud}
+            - REDIS_HOST=redis
+            - REDIS_HOST_PASSWORD=redis_pass
             - "NEXTCLOUD_TRUSTED_DOMAINS=cloud.d0niek.pl office.d0niek.pl"
         depends_on:
             - db
+            - redis
 
     db:
         image: mariadb:10.5
@@ -32,6 +35,11 @@ services:
             - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set or empty}
             - MYSQL_USER=${MYSQL_USER:-nextcloud}
+
+    redis:
+        image: redis:alpine
+        restart: always
+        command: redis-server --requirepass redis_pass --maxmemory 1GB
 
     collabora:
         image: collabora/code
