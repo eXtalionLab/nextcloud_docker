@@ -4,4 +4,5 @@ services:
     nextcloud:
         build:
             context: .
+            dockerfile: Dockerfile
         image: docker-hub.extalion.com/extalion/nextcloud

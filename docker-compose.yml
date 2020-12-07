@@ -5,12 +5,15 @@ services:
         image: docker-hub.extalion.com/extalion/nextcloud
         restart: always
         ports:
-            - "127.0.0.1:8889:80"
+            - "127.0.0.1:${NEXTCLOUD_PORT:?NEXTCLOUD_PORT is not set or empty}:80"
         volumes:
-            - ./nextcloud:/var/www/html
             - ./apps:/var/www/html/custom_apps
             - ./config:/var/www/html/config
             - ./data:/var/www/html/data
+            - ./nextcloud:/var/www/html
+        depends_on:
+            - db
+            - redis
         environment:
             - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
             - MYSQL_HOST=db
@@ -18,10 +21,7 @@ services:
             - MYSQL_USER=${MYSQL_USER:-nextcloud}
             - REDIS_HOST=redis
             - REDIS_HOST_PASSWORD=redis_pass
-            - "NEXTCLOUD_TRUSTED_DOMAINS=cloud.d0niek.pl office.d0niek.pl"
-        depends_on:
-            - db
-            - redis
+            - NEXTCLOUD_TRUSTED_DOMAINS=cloud.d0niek.pl office.d0niek.pl
 
     db:
         image: mariadb:10.5
@@ -33,7 +33,7 @@ services:
         environment:
             - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}
-            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is not set or empty}
+            - MYSQL_RANDOM_ROOT_PASSWORD='1'
             - MYSQL_USER=${MYSQL_USER:-nextcloud}
 
     redis:
@@ -43,13 +43,13 @@ services:
 
     collabora:
         image: collabora/code
-        environment:
-            - "username=root"
-            - "password=BIUgIT78G6rFF6FYVgfF"
-            - "domain=cloud.d0niek.pl"
-            - "server_name=office.d0niek.pl"
         restart: always
         ports:
-            - "127.0.0.1:9980:9980"
+            - "127.0.0.1:${COLLABORA_PORT:?COLLABORA_PORT is not set or empty}:9980"
+        environment:
+            - username=root
+            - password=BIUgIT78G6rFF6FYVgfF
+            - domain=cloud.d0niek.pl
+            - server_name=office.d0niek.pl
         cap_add:
             - MKNOD
