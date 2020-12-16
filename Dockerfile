@@ -14,14 +14,7 @@ FROM nextcloud:${NEXTCLOUD_VERSION}-apache AS nextcloud
 RUN set -eux; \
     \
     ln -sr $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
-
-
-RUN set -eux; \
-    \
-    { \
-        echo 'post_max_size=32M'; \
-        echo 'upload_max_filesize=32M'; \
-    } > /usr/local/etc/php/conf.d/uploads.ini
+COPY docker/nextcloud/conf.d/nextcloud.ini $PHP_INI_DIR/conf.d/nextcloud.ini
 
 
 RUN set -ex; \
