@@ -73,6 +73,13 @@ RUN mkdir -p \
 
 COPY supervisord.conf /
 
+COPY docker/nextcloud/cron.sh /nextcloud-cron.sh
+RUN set -eux; \
+    \
+    chmod +x /nextcloud-cron.sh; \
+    \
+    echo '*/10 * * * * /nextcloud-cron.sh' >> /var/spool/cron/crontabs/www-data
+
 ENV NEXTCLOUD_UPDATE=1
 
 CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]
