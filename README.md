@@ -65,10 +65,10 @@ To improve search result we can install:
 - [fulltextsearch_elasticsearch](https://apps.nextcloud.com/apps/fulltextsearch_elasticsearch)
 
 goto [settings](http://localhost:80/settings/admin/fulltextsearch) select
-Elasticsearch from select box, as a address type `http://elasticsearch:9200`
+Elasticsearch from select box, as an address type `http://elasticsearch:9200`
 and setup index to `nextcloud_index`.
 
-We can wait for cron triger to run indexing or we can run:
+For first index run:
 
 ```
 docker-compose exec -u www-data nextcloud ./occ fulltextsearch:index
