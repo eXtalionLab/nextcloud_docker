@@ -13,6 +13,7 @@ services:
             - ./nextcloud:/var/www/html
         depends_on:
             - db
+            - elasticsearch
             - redis
         environment:
             - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
@@ -53,3 +54,21 @@ services:
             - server_name=office.d0niek.pl
         cap_add:
             - MKNOD
+
+    elasticsearch:
+        image: docker-hub.extalion.com/extalion/nextcloud_elasticsearch
+        restart: always
+        environment:
+            - discovery.type=single-node
+            - bootstrap.memory_lock=true
+            - ES_JAVA_OPTS=-Xms512m -Xmx512m
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - elasticsearch_data:/usr/share/elasticsearch/data
+
+volumes:
+    elasticsearch_data:
+        driver: local

@@ -55,3 +55,21 @@ And regenerate previews first time by:
 ```
 docker-compose exec -u www-data nextcloud ./occ preview:generate-all -vvv
 ```
+
+## Full Text Search
+
+To improve search result we can install:
+
+- [fulltextsearch](https://apps.nextcloud.com/apps/fulltextsearch)
+- [files_fulltextsearch](https://apps.nextcloud.com/apps/files_fulltextsearch)
+- [fulltextsearch_elasticsearch](https://apps.nextcloud.com/apps/fulltextsearch_elasticsearch)
+
+goto [settings](http://localhost:80/settings/admin/fulltextsearch) select
+Elasticsearch from select box, as a address type `http://elasticsearch:9200`
+and setup index to `nextcloud_index`.
+
+We can wait for cron triger to run indexing or we can run:
+
+```
+docker-compose exec -u www-data nextcloud ./occ fulltextsearch:index
+```

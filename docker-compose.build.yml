@@ -6,3 +6,9 @@ services:
             context: .
             dockerfile: Dockerfile
         image: docker-hub.extalion.com/extalion/nextcloud
+
+    elasticsearch:
+        build:
+            context: ./docker/elasticsearch
+            dockerfile: Dockerfile
+        image: docker-hub.extalion.com/extalion/nextcloud_elasticsearch
