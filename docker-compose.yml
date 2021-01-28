@@ -4,8 +4,6 @@ services:
     nextcloud:
         image: docker-hub.extalion.com/extalion/nextcloud
         restart: always
-        ports:
-            - "127.0.0.1:${NEXTCLOUD_PORT:?NEXTCLOUD_PORT is not set or empty}:80"
         volumes:
             - ./apps:/var/www/html/custom_apps
             - ./config:/var/www/html/config
@@ -23,6 +21,16 @@ services:
             - REDIS_HOST=redis
             - REDIS_HOST_PASSWORD=redis_pass
             - NEXTCLOUD_TRUSTED_DOMAINS=cloud.d0niek.pl office.d0niek.pl
+
+    nginx:
+        image: docker-hub.extalion.com/extalion/nextcloud_nginx
+        restart: always
+        ports:
+            - "127.0.0.1:${NEXTCLOUD_PORT:?NEXTCLOUD_PORT is not set or empty}:80"
+        volumes:
+            - ./nextcloud:/var/www/html
+        depends_on:
+            - nextcloud
 
     db:
         image: mariadb:10.5
