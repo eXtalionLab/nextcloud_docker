@@ -66,20 +66,24 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*
 
 
-RUN mkdir -p \
-    /var/log/supervisord \
-    /var/run/supervisord
-
-
-COPY supervisord.conf /
-
 COPY docker/nextcloud/cron.sh /nextcloud-cron.sh
+COPY docker/nextcloud/entrypoint.sh /nextcloud-entrypoint.sh
 RUN set -eux; \
     \
     chmod +x /nextcloud-cron.sh; \
+    chmod +x /nextcloud-entrypoint.sh; \
     \
     echo '*/10 * * * * /nextcloud-cron.sh' >> /var/spool/cron/crontabs/www-data
 
+
+RUN mkdir -p \
+    /var/log/supervisord \
+    /var/run/supervisord \
+;
+
+COPY docker/nextcloud/supervisord.conf /
+
 ENV NEXTCLOUD_UPDATE=1
 
+ENTRYPOINT ["/nextcloud-entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]
