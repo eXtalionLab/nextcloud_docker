@@ -8,34 +8,37 @@ ARG NEXTCLOUD_VERSION=20
 
 
 # "nextcloud" stage
-FROM nextcloud:${NEXTCLOUD_VERSION}-fpm-alpine AS nextcloud
+FROM nextcloud:${NEXTCLOUD_VERSION}-fpm AS nextcloud
 
 
 RUN set -eux; \
     \
-    ln -s $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+    ln -sr $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
 COPY docker/nextcloud/conf.d/nextcloud.ini $PHP_INI_DIR/conf.d/nextcloud.ini
 
 
 RUN set -ex; \
     \
-    apk add --no-cache \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
         ffmpeg \
-        imagemagick \
+        libmagickcore-6.q16-6-extra \
         procps \
-        samba-client \
+        smbclient \
         supervisor \
-    ;
+    ; \
+    rm -rf /var/lib/apt/lists/*
 
 RUN set -ex; \
     \
-    apk add --no-cache --virtual .build-deps \
-        $PHPIZE_DEPS \
-        bzip2-dev \
-        imap-dev \
-        krb5-dev \
-        openssl-dev \
-        samba-dev \
+    savedAptMark="$(apt-mark showmanual)"; \
+    \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        libbz2-dev \
+        libc-client-dev \
+        libkrb5-dev \
+        libsmbclient-dev \
     ; \
     \
     docker-php-ext-configure imap --with-kerberos --with-imap-ssl; \
@@ -49,14 +52,19 @@ RUN set -ex; \
     \
     docker-php-ext-enable smbclient; \
     \
-    runDeps="$( \
-        scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
-            | tr ',' '\n' \
-            | sort -u \
-            | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
-    )"; \
-    apk add --virtual .nextcloud-phpext-rundeps $runDeps; \
-    apk del .build-deps
+# reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
+    apt-mark auto '.*' > /dev/null; \
+    apt-mark manual $savedAptMark; \
+    ldd "$(php -r 'echo ini_get("extension_dir");')"/*.so \
+        | awk '/=>/ { print $3 }' \
+        | sort -u \
+        | xargs -r dpkg-query -S \
+        | cut -d: -f1 \
+        | sort -u \
+        | xargs -rt apt-mark manual; \
+    \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*
 
 
 COPY docker/nextcloud/cron.sh /nextcloud-cron.sh
