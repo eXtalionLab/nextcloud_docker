@@ -20,7 +20,7 @@ services:
             - MYSQL_USER=${MYSQL_USER:-nextcloud}
             - REDIS_HOST=redis
             - REDIS_HOST_PASSWORD=redis_pass
-            - NEXTCLOUD_TRUSTED_DOMAINS=cloud.d0niek.pl office.d0niek.pl
+            - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
 
     nginx:
         image: docker-hub.extalion.com/extalion/nextcloud_nginx
@@ -59,10 +59,15 @@ services:
         ports:
             - "127.0.0.1:${COLLABORA_PORT:?COLLABORA_PORT is not set or empty}:9980"
         environment:
-            - username=root
-            - password=BIUgIT78G6rFF6FYVgfF
-            - domain=cloud.d0niek.pl
-            - server_name=office.d0niek.pl
+            - cert_domain=${COLLABORA_CERT_DOMAIN}
+            - dictionaries=${COLLABORA_DICTIONARIES}
+            - domain=${COLLABORA_DOMAIN:?COLLABORA_DOMAIN is not set or empty}
+            - DONT_GEN_SSL_CERT=${COLLABORA_DONT_GEN_SSL_CERT}
+            - extra_params=${COLLABORA_EXTRA_PARAMS}
+            - password=${COLLABORA_PASSWORD}
+            - SAL_LOG=${COLLABORA_SAL_LOG}
+            - server_name=${COLLABORA_SERVER_NAME:?COLLABORA_SERVER_NAME is not set or empty}
+            - username=${COLLABORA_USERNAME}
         cap_add:
             - MKNOD
 

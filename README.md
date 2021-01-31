@@ -71,3 +71,27 @@ For first index run:
 ```
 bin/occ fulltextsearch:index
 ```
+
+## Collabora online
+
+If you want to run collabora online locally and you don't have a reverse proxy,
+you have to add `nginx` and `collabora` to your **/etc/hosts**:
+
+```
+127.0.0.1 collabora
+127.0.0.1 nginx
+```
+
+For nextcloud (docker service) collabora is avaliable under `collabora` host and
+it has to be the same host for a client (your browser).
+
+For collabora (docker service) nextcloud is avaliable under `nginx` host and you
+have to access nextcloud instance via [http://nginx:$NEXTCLOUD_PORT](http://nginx:80).
+
+---
+
+Install [richdocuments](https://apps.nextcloud.com/apps/richdocuments),
+goto [settings](http://nginx:80/settings/admin/richdocuments), select `Use your
+own server` and as an url put `http://collabora:9980`.
+
+**Done!**
