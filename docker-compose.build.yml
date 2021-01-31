@@ -5,16 +5,16 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        image: docker-hub.extalion.com/extalion/nextcloud
+        image: ${NEXTCLOUD_IMAGE}
 
     nginx:
         build:
             context: ./docker/nginx
             dockerfile: Dockerfile
-        image: docker-hub.extalion.com/extalion/nextcloud_nginx
+        image: ${NGINX_IMAGE}
 
     elasticsearch:
         build:
             context: ./docker/elasticsearch
             dockerfile: Dockerfile
-        image: docker-hub.extalion.com/extalion/nextcloud_elasticsearch
+        image: ${ELASTICSEARCH_IMAGE}

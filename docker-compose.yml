@@ -2,7 +2,7 @@ version: '3'
 
 services:
     nextcloud:
-        image: docker-hub.extalion.com/extalion/nextcloud
+        image: ${NEXTCLOUD_IMAGE}
         restart: always
         volumes:
             - ./apps:/var/www/html/custom_apps
@@ -23,7 +23,7 @@ services:
             - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
 
     nginx:
-        image: docker-hub.extalion.com/extalion/nextcloud_nginx
+        image: ${NGINX_IMAGE}
         restart: always
         ports:
             - "127.0.0.1:${NEXTCLOUD_PORT:?NEXTCLOUD_PORT is not set or empty}:80"
@@ -72,7 +72,7 @@ services:
             - MKNOD
 
     elasticsearch:
-        image: docker-hub.extalion.com/extalion/nextcloud_elasticsearch
+        image: ${ELASTICSEARCH_IMAGE}
         restart: always
         environment:
             - discovery.type=single-node

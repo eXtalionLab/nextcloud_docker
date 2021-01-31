@@ -130,3 +130,26 @@ Reload docker:
 ```
 docker-compose up [-d]
 ```
+
+## Update / Deploy
+
+Update images names (**.env** `*_IMAGE`) which point to your hub.
+
+Run:
+
+```
+docker-compose -f docker-compose.build.yml build --pull
+```
+
+If you didn't build images on the server run:
+
+```
+docker-compose -f docker-compose.build.yml push
+```
+
+On the server run:
+
+```
+docker-compose pull
+docker-compose up -d
+```
