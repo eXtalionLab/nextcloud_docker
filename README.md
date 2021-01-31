@@ -33,15 +33,13 @@ Install Nextcloud [app](https://apps.nextcloud.com/apps/previewgenerator) and
 setup recommended configurations:
 
 ```
-docker-compose exec -u www-data nextcloud bash
-./occ config:app:set previewgenerator squareSizes --value="32 256"
-./occ config:app:set previewgenerator widthSizes  --value="256 384"
-./occ config:app:set previewgenerator heightSizes --value="256"
-./occ config:system:set preview_max_x --value 2048
-./occ config:system:set preview_max_y --value 2048
-./occ config:system:set jpeg_quality --value 60
-./occ config:app:set preview jpeg_quality --value="60"
-exit
+bin/occ config:app:set previewgenerator squareSizes --value="32 256"
+bin/occ config:app:set previewgenerator widthSizes  --value="256 384"
+bin/occ config:app:set previewgenerator heightSizes --value="256"
+bin/occ config:system:set preview_max_x --value 2048
+bin/occ config:system:set preview_max_y --value 2048
+bin/occ config:system:set jpeg_quality --value 60
+bin/occ config:app:set preview jpeg_quality --value="60"
 ```
 
 If you want to start from scratch you can delete preview folder:
@@ -53,7 +51,7 @@ rm -rf ./data/appdata_*/preview
 And regenerate previews first time by:
 
 ```
-docker-compose exec -u www-data nextcloud ./occ preview:generate-all -vvv
+bin/occ preview:generate-all -vvv
 ```
 
 ## Full Text Search
@@ -64,12 +62,12 @@ To improve search result we can install:
 - [files_fulltextsearch](https://apps.nextcloud.com/apps/files_fulltextsearch)
 - [fulltextsearch_elasticsearch](https://apps.nextcloud.com/apps/fulltextsearch_elasticsearch)
 
-goto [settings](http://localhost:80/settings/admin/fulltextsearch) select
-Elasticsearch from select box, as an address type `http://elasticsearch:9200`
+goto [settings](http://localhost:80/settings/admin/fulltextsearch), select
+`Elasticsearch` from select box, as an address type `http://elasticsearch:9200`
 and setup index to `nextcloud_index`.
 
 For first index run:
 
 ```
-docker-compose exec -u www-data nextcloud ./occ fulltextsearch:index
+bin/occ fulltextsearch:index
 ```
