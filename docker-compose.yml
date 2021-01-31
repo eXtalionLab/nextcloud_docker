@@ -28,6 +28,9 @@ services:
         ports:
             - "127.0.0.1:${NEXTCLOUD_PORT:?NEXTCLOUD_PORT is not set or empty}:80"
         volumes:
+            - ./apps:/var/www/html/custom_apps
+            - ./config:/var/www/html/config
+            - ./data:/var/www/html/data
             - ./nextcloud:/var/www/html
         depends_on:
             - nextcloud
