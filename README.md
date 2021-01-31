@@ -91,7 +91,7 @@ have to access nextcloud instance via [http://nginx:$NEXTCLOUD_PORT](http://ngin
 ---
 
 Install [richdocuments](https://apps.nextcloud.com/apps/richdocuments),
-goto [settings](http://nginx:80/settings/admin/richdocuments), select `Use your
-own server` and as an url put `http://collabora:9980`.
+goto [settings](http://nginx:80/settings/admin/richdocuments), select
+`Use your own server` and as an url put `http://collabora:9980`.
 
 **Done!**
