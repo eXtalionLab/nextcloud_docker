@@ -95,3 +95,38 @@ goto [settings](http://nginx:80/settings/admin/richdocuments), select
 `Use your own server` and as an url put `http://collabora:9980`.
 
 **Done!**
+
+## Reverse proxy
+
+Basic nginx configuration for reverse proxy is avaliable
+[here](https://www.digitalocean.com/community/tools/nginx?domains.0.server.domain=nextcloud.example.com&domains.0.server.redirectSubdomains=false&domains.0.https.hstsPreload=true&domains.0.php.php=false&domains.0.reverseProxy.reverseProxy=true&domains.0.reverseProxy.proxyPass=http%3A%2F%2F127.0.0.1%3A%24NEXTCLOUD_PORT&domains.0.routing.root=false&domains.0.logging.accessLog=true&domains.0.logging.errorLog=true&domains.1.server.domain=collabora.example.com&domains.1.server.redirectSubdomains=false&domains.1.https.hstsPreload=true&domains.1.php.php=false&domains.1.reverseProxy.reverseProxy=true&domains.1.reverseProxy.proxyPass=http%3A%2F%2F127.0.0.1%3A%24COLLABORA_PORT&domains.1.routing.root=false&domains.1.logging.accessLog=true&domains.1.logging.errorLog=true).
+
+Update `Server > Domain` names and `Reverse proxy > proxy_pass` ports (read
+ports from your **.env** file).
+
+Remove `include nginxconfig.io/security.conf;` from nextcloud domain conf.
+Docker nginx service conf is build base on
+[Nextcloud example](https://github.com/nextcloud/docker/blob/master/.examples/docker-compose/insecure/mariadb-cron-redis/fpm/web/nginx.conf).
+
+In **.env** file you have to change:
+
+```
+NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.example.com
+COLLABORA_CERT_DOMAIN=collabora.example.com
+COLLABORA_SERVER_NAME=collabora.example.com
+COLLABORA_DOMAIN=nextcloud.example.com
+```
+
+If you have install nextcloud already, in **./config/config.php**:
+
+- add `nextcloud.example.pl` to `trusted_domains` array,
+- change `overwrite.cli.url` to `nextcloud.example.pl`.
+
+If you have setup collabora online, you have to update
+`URL (and Port) of Collabora Online-server` to `collabora.example.com`.
+
+Reload docker:
+
+```
+docker-compose up [-d]
+```
