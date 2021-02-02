@@ -1,5 +1,13 @@
 # Nextcloud with docker
 
+- [Install](#install)
+  - [Log level](#log-level)
+- [Improving Nextcloud Previews](#improving-nextcloud-previews)
+- [Full Text Search](#full-text-search)
+- [Collabora online](#collabora-online)
+- [Reverse proxy](#reverse-proxy)
+- [Update / Deploy](#update--deploy)
+
 ## Install
 
 Copy **.env.dist** to **.env** and edit values to your needs:
