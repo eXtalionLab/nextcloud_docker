@@ -24,6 +24,14 @@ docker-compose up [-d]
 Goto [http://localhost:$NEXTCLOUD_PORT](http://localhost:80) and follow
 Nextcloud installation instructions.
 
+### Log level
+
+To "increase" performance you can set log level to `error`:
+
+```
+bin/occ log:manage --level=error
+```
+
 ## Improving Nextcloud Previews
 
 According to this [article](https://ownyourbits.com/2019/06/29/understanding-and-improving-nextcloud-previews/)
