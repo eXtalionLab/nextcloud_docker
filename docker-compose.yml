@@ -85,6 +85,16 @@ services:
         volumes:
             - elasticsearch_data:/usr/share/elasticsearch/data
 
+    coturn:
+        image: ${COTURN_IMAGE}
+        restart: always
+        ports:
+            - "${COTURN_PORT:?COTURN_PORT is not set or empty}:3478"
+            - "${COTURN_PORT:?COTURN_PORT is not set or empty}:3478/udp"
+        environment:
+            - COTURN_SECRET=${COTURN_SECRET}
+            - COTURN_REALM=${COTURN_REALM}
+
 volumes:
     elasticsearch_data:
         driver: local

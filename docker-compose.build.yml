@@ -18,3 +18,9 @@ services:
             context: ./docker/elasticsearch
             dockerfile: Dockerfile
         image: ${ELASTICSEARCH_IMAGE}
+
+    coturn:
+        build:
+            context: ./docker/coturn
+            dockerfile: Dockerfile
+        image: ${COTURN_IMAGE}
