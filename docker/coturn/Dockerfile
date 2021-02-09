@@ -11,3 +11,9 @@ ARG COTURN_VERSION=latest
 FROM coturn/coturn:${COTURN_VERSION}
 
 COPY turnserver.conf /etc/turnserver.conf
+
+COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/local/bin/turnserver"]
