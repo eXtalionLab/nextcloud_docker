@@ -6,6 +6,7 @@
 - [Full Text Search](#full-text-search)
 - [Collabora online](#collabora-online)
 - [Reverse proxy](#reverse-proxy)
+- [Talk (STUN / TURN)](#talk-stun--turn)
 - [Update / Deploy](#update--deploy)
 
 ## Install
@@ -146,6 +147,19 @@ Reload docker:
 ```
 docker-compose up [-d]
 ```
+
+## Talk (STUN / TURN)
+
+If you have install talk [app](https://apps.nextcloud.com/apps/spreed) and you
+want to "increase" performance and have video calls, you have to set up your own
+STUN/TURN server.
+
+In **.env** change `COTURN_REALM` to your nextcloud domain, goto
+[settings](http://localhost:80/settings/admin/talk) and set:
+
+- `STUN server` to `your-server-ip:$COTURN_PORT`,
+- `TURN server` to `your-server-ip:$COTURN_PORT`,
+- `TURN secret` to `$COTURN_SECRET`.
 
 ## Update / Deploy
 
