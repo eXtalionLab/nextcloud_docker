@@ -10,6 +10,7 @@ services:
             - ./data:/var/www/html/data
             - ./nextcloud:/var/www/html
         depends_on:
+            - coturn
             - db
             - elasticsearch
             - redis
@@ -51,7 +52,7 @@ services:
     redis:
         image: redis:alpine
         restart: always
-        command: redis-server --requirepass redis_pass --maxmemory 1GB
+        command: redis-server --requirepass redis_pass
 
     collabora:
         image: collabora/code
@@ -91,6 +92,8 @@ services:
         ports:
             - "${COTURN_PORT:?COTURN_PORT is not set or empty}:3478"
             - "${COTURN_PORT:?COTURN_PORT is not set or empty}:3478/udp"
+        depends_on:
+            - redis
         environment:
             - COTURN_SECRET=${COTURN_SECRET}
             - COTURN_REALM=${COTURN_REALM}
