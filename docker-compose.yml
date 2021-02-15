@@ -5,6 +5,7 @@ services:
         image: ${NEXTCLOUD_IMAGE}
         restart: always
         volumes:
+            - php_socket:/var/run/php
             - ./apps:/var/www/html/custom_apps
             - ./config:/var/www/html/config
             - ./data:/var/www/html/data
@@ -29,6 +30,7 @@ services:
         ports:
             - "127.0.0.1:${NEXTCLOUD_PORT:?NEXTCLOUD_PORT is not set or empty}:80"
         volumes:
+            - php_socket:/var/run/php
             - ./apps:/var/www/html/custom_apps
             - ./config:/var/www/html/config
             - ./data:/var/www/html/data
@@ -99,5 +101,6 @@ services:
             - COTURN_REALM=${COTURN_REALM}
 
 volumes:
+    php_socket:
     elasticsearch_data:
         driver: local
