@@ -13,6 +13,12 @@ services:
             dockerfile: Dockerfile
         image: ${NGINX_IMAGE}
 
+    db:
+        build:
+            context: ./docker/db
+            dockerfile: Dockerfile
+        image: ${DB_IMAGE}
+
     elasticsearch:
         build:
             context: ./docker/elasticsearch

@@ -39,7 +39,7 @@ services:
             - nextcloud
 
     db:
-        image: mariadb:10.5
+        image: ${DB_IMAGE}
         command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
         restart: always
         volumes:
