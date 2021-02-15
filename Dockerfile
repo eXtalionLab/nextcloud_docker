@@ -14,7 +14,8 @@ FROM nextcloud:${NEXTCLOUD_VERSION}-fpm AS nextcloud
 RUN set -eux; \
     \
     ln -sr $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
-COPY docker/nextcloud/conf.d/nextcloud.ini $PHP_INI_DIR/conf.d/nextcloud.ini
+COPY docker/nextcloud/conf.d/nextcloud.ini $PHP_INI_DIR/conf.d/zzz-nextcloud.ini
+COPY docker/nextcloud/php-fpm.d/nextcloud.conf $PHP_INI_DIR/../php-fpm.d/zzz-nextcloud.conf
 
 
 RUN set -ex; \
