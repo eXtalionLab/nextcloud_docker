@@ -44,7 +44,7 @@ services:
         restart: always
         volumes:
             - ./db:/var/lib/mysql
-            - ./initdb:/docker-entrypoint-initdb.d
+            - ./initdb.d:/docker-entrypoint-initdb.d
         environment:
             - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}

@@ -1,10 +1,12 @@
 
-/backup/*
+/backups/*
 /db/*
-/initdb/*
+/docker_volumes/*
+/initdb.d/*
 
 /docker-compose.*
 /.env
+/*.log
 
 /apps/*
 /config/*
