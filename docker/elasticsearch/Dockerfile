@@ -4,7 +4,7 @@
 
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG ELASTICSEARCH_VERSION=7.12.0
+ARG ELASTICSEARCH_VERSION=7.13.2
 
 
 # "elasticsearch" stage
