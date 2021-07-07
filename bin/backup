@@ -18,6 +18,7 @@ dockerImgToBackupVolumes="alpine"
 dockerVolumesDir="docker_volumes"
 # Allow types: custom, mysql, postgresql
 dbType="mysql"
+envFile=".env"
 # MySQL's default "max_allowed_packet" setting is fairly conservative
 # (16MB). If we try to dump a row which is larger than this limit, the
 # dump will fail.
@@ -26,7 +27,7 @@ mysqlMaxAllowedPacket="1G"
 
 ###> files/volumes to backup ###
 filesToBackup=( \
-    ".env" \
+    "$envFile" \
     "apps/" \
     "config/" \
     "data/" \
@@ -100,14 +101,10 @@ function decreasePriority {
     renice -n 19 $$ >> /dev/null 2> "$backupLogFile"
 }
 
-function loadFile {
-    local file=$1
+function getEnv {
+    local env=$1
 
-    if [[ ! -f "$file" ]]; then
-        error "File \"$file\" doesn't exists!"
-    fi
-
-    source "$file"
+    grep "^$env=" "$envFile" | awk -F= '{print $2}'
 }
 
 function backupCustomDb {
@@ -133,7 +130,13 @@ function backupCustomDb {
 }
 
 function backupMysqlDb {
-    loadFile ".env"
+    local dbName
+    local dbPassword
+    local dbUser
+
+    dbName=$(getEnv "MYSQL_DATABASE")
+    dbPassword=$(getEnv "MYSQL_PASSWORD")
+    dbUser=$(getEnv "MYSQL_USER")
 
     ( \
         docker-compose exec -T "$dockerDbServiceName" mysqldump \
@@ -141,22 +144,26 @@ function backupMysqlDb {
             --single-transaction \
             --max-allowed-packet "$mysqlMaxAllowedPacket" \
             -r "$1" \
-            -u "$MYSQL_USER" \
-            -p"$MYSQL_PASSWORD" \
-            "$MYSQL_DATABASE" >> "$backupLogFile" 2>&1 \
+            -u "$dbUser" \
+            -p"$dbPassword" \
+            "$dbName" >> "$backupLogFile" 2>&1 \
         && info "OK" \
     ) || warning "Fail. See \"$backupLogFile\""
 }
 
 function backupPostgresDb {
-    loadFile ".env"
+    local dbName
+    local dbUser
+
+    dbName=$(getEnv "POSTGRES_DB")
+    dbUser=$(getEnv "POSTGRES_USER")
 
     ( \
         docker-compose exec -T "$dockerDbServiceName" pg_dump \
             -b \
             -f "$1" \
-            -U "$POSTGRES_USER" \
-            "$POSTGRES_DB" >> "$backupLogFile" 2>&1 \
+            -U "$dbUser" \
+            "$dbName" >> "$backupLogFile" 2>&1 \
         && info "OK" \
     ) || warning "Fail. See \"$backupLogFile\""
 }
