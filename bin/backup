@@ -74,6 +74,27 @@ function init {
     decreasePriority
 }
 
+function clean {
+    info "Clean after backup"
+
+    local localDockerFileName="$dockerDbInitdbDir/dump.sql"
+
+    if [[ -f "$localDockerFileName" ]]; then
+        info "Remove sql dump \"$localDockerFileName\""
+        rm "$localDockerFileName" >> "$backupLogFile" 2>&1 || ( \
+            warning "Fail. See $logFile"
+        )
+    fi
+
+    if [[ ${#volumesToBackup[@]} -gt 0 && "$backupType" != "db" ]]; then
+        removeVolumesFilesFromLocalDir
+    fi
+
+    if [[ ! -s "$backupLogFile" ]]; then
+        rm "$backupLogFile"
+    fi
+}
+
 function createDir {
     local dir="$1"
     local logFile
@@ -86,7 +107,7 @@ function createDir {
             error "Fail. See $logFile"
         )
 
-        if [[ -f "$logFile" ]]; then
+        if [[ ! -s "$logFile" ]]; then
             rm "$logFile"
         fi
     fi
@@ -147,7 +168,6 @@ function backupMysqlDb {
             -u "$dbUser" \
             -p"$dbPassword" \
             "$dbName" >> "$backupLogFile" 2>&1 \
-        && info "OK" \
     ) || warning "Fail. See \"$backupLogFile\""
 }
 
@@ -164,15 +184,32 @@ function backupPostgresDb {
             -f "$1" \
             -U "$dbUser" \
             "$dbName" >> "$backupLogFile" 2>&1 \
-        && info "OK" \
+    ) || warning "Fail. See \"$backupLogFile\""
+}
+
+function doBackupFile {
+    local fileName="$backupDir/$backupFile.tar.gz"
+    local -n curentFilesToBackup=$1
+    local curentFilesToExclude=()
+
+    if [[ $(test $2) ]]; then
+        curentFilesToExclude=$2
+    fi
+
+    (
+        tar -czf "$fileName" \
+            --ignore-failed-read \
+            ${curentFilesToExclude[*]} \
+            ${curentFilesToBackup[*]} >> "$backupLogFile" 2>&1 \
+        && info "Backup file \"$fileName\"" \
     ) || warning "Fail. See \"$backupLogFile\""
 }
 
 function backupDb {
     info "Backup db"
 
-    local dockerFileName="/docker-entrypoint-initdb.d/$backupFile.sql"
-    local localDockerFileName="$dockerDbInitdbDir/$backupFile.sql"
+    local dockerFileName="/docker-entrypoint-initdb.d/dump.sql"
+    local localDockerFileName="$dockerDbInitdbDir/dump.sql"
 
     if [[ "$dbType" == "custom" ]]; then
         backupCustomDb "$dockerFileName" "$localDockerFileName"
@@ -182,15 +219,17 @@ function backupDb {
         backupPostgresDb "$dockerFileName"
     else
         warning "Skip. Unknown db type \"$dbType\""
+
+        return
     fi
 
-    local fileName="$backupDir/$backupFile.sql"
-
     if [[ -f "$localDockerFileName" ]]; then
-        ( \
-            mv "$localDockerFileName" "$fileName" >> "$backupLogFile" 2>&1 \
-            && info "Check \"$fileName\"" \
-        ) || warning "Fail. Can't move file, check \"$localDockerFileName\""
+        if [[ "$backupType" == "db" ]]; then
+            local tmpArray=("$localDockerFileName")
+            doBackupFile tmpArray
+        else
+            filesToBackup+=("$localDockerFileName")
+        fi
     fi
 }
 
@@ -213,10 +252,13 @@ function moveVolumesFilesToLocalDir {
 
 function removeVolumesFilesFromLocalDir {
     info "Remove volumes files from \"$dockerVolumesDir\""
-    docker run --rm \
-        -v "$(realpath "$dockerVolumesDir")":/local_dir \
-        "$dockerImgToBackupVolumes" \
-        rm -rf /local_dir/ 2> /dev/null
+
+    for v in "${volumesToBackup[@]}"; do
+        docker run --rm \
+            -v "$(realpath "$dockerVolumesDir")":/local_dir \
+            "$dockerImgToBackupVolumes" \
+            rm -rf "/local_dir/$v"  >> "$backupLogFile" 2>&1
+    done
 }
 
 function mapExcludeFilesToTarOption {
@@ -241,33 +283,22 @@ function backupFiles {
     fi
 
     mapExcludeFilesToTarOption
-
-    local fileName="$backupDir/$backupFile.tar.gz"
-
-    (
-        tar -czf "$fileName" \
-            --ignore-failed-read \
-            ${filesToExclude[*]} \
-            ${filesToBackup[*]} >> "$backupLogFile" 2>&1 \
-        && info "OK" \
-        && info "Check \"$fileName\"" \
-    ) || warning "Fail. See \"$backupLogFile\""
-
-    if [[ ${#volumesToBackup[@]} -gt 0 ]]; then
-        removeVolumesFilesFromLocalDir
-    fi
+    doBackupFile filesToBackup filesToExclude
 }
 
 if [[ "$backupType" == "all" ]]; then
     init
     backupDb
     backupFiles
+    clean
 elif [[ "$backupType" == "db" ]]; then
     init
     backupDb
+    clean
 elif [[ "$backupType" == "files" ]]; then
     init
     backupFiles
+    clean
 else
     help
 fi
