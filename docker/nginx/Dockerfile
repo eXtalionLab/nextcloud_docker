@@ -4,10 +4,10 @@
 
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG NGINX_VERSION=1.19
+ARG NGINX_VERSION=1.20
 
 
 # "nginx" stage
 FROM nginx:${NGINX_VERSION}-alpine
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
