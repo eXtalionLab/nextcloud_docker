@@ -4,7 +4,7 @@
 
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG COTURN_VERSION=latest
+ARG COTURN_VERSION=4
 
 
 # "coturn" stage
