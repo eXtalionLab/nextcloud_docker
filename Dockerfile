@@ -70,10 +70,12 @@ RUN set -ex; \
 
 COPY docker/nextcloud/cron.sh /nextcloud-cron.sh
 COPY docker/nextcloud/entrypoint.sh /nextcloud-entrypoint.sh
+COPY docker/nextcloud/notify_push.sh /notify_push.sh
 RUN set -eux; \
     \
     chmod +x /nextcloud-cron.sh; \
     chmod +x /nextcloud-entrypoint.sh; \
+    chmod +x /notify_push.sh; \
     \
     echo '*/10 * * * * /nextcloud-cron.sh' >> /var/spool/cron/crontabs/www-data
 
@@ -84,6 +86,8 @@ RUN mkdir -p \
 ;
 
 COPY docker/nextcloud/supervisord.conf /
+
+EXPOSE 7867
 
 ENV NEXTCLOUD_UPDATE=1
 

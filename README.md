@@ -7,6 +7,7 @@
 - [Collabora online](#collabora-online)
 - [Reverse proxy](#reverse-proxy)
 - [Talk (STUN / TURN)](#talk-stun--turn)
+- [Notify Push](#notify-push)
 - [Update / Deploy](#update--deploy)
 
 ## Install
@@ -160,6 +161,17 @@ In **.env** change `COTURN_REALM` to your nextcloud domain, goto
 - `STUN server` to `your-server-ip:$COTURN_PORT`,
 - `TURN server` to `your-server-ip:$COTURN_PORT`,
 - `TURN secret` to `$COTURN_SECRET`.
+
+## Notify Push
+
+To configure [notify_push](https://github.com/nextcloud/notify_push) app:
+
+- Install the `notify_push` app from the appstore,
+- Restart `nextcloud` service (`docker-compose restart nextcloud`),
+- set the url of the push server (`bin/occ notify_push:setup http://domain/push`)
+
+If you got **push server is not a trusted proxy** then you have to add displayed
+proxies in **config/config.php** to `trusted_proxies`.
 
 ## Update / Deploy
 
