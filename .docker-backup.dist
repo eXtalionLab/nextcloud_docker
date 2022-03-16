@@ -1,0 +1,29 @@
+# See https://github.com/eXtalionLab/docker-backup
+
+###> config ###
+backupDir="backups"
+# How much old bakcups keep
+backupFilesToKeep=1
+dockerDbServiceName="db"
+# Use local image to skip download
+dockerImgToBackupVolumes="alpine"
+dockerVolumesDir="docker_volumes"
+# Allow types: custom, mysql, postgresql
+dbType="mysql"
+envFile=".env"
+###< config ###
+
+###> files/volumes to backup ###
+filesToBackup=( \
+    "$envFile" \
+    "apps/" \
+    "config/" \
+    "data/" \
+    "nextcloud/" \
+)
+filesToExclude=( \
+    "data/*.log" \
+)
+# Remember to prefix volumes with docker-compose project name
+volumesToBackup=()
+###< files/volumes to backup ###
