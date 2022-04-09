@@ -64,7 +64,7 @@ services:
         environment:
             - cert_domain=${COLLABORA_CERT_DOMAIN}
             - dictionaries=${COLLABORA_DICTIONARIES}
-            - domain=${COLLABORA_DOMAIN:?COLLABORA_DOMAIN is not set or empty}
+            - aliasgroup1=${COLLABORA_DOMAIN:?COLLABORA_DOMAIN is not set or empty}
             - DONT_GEN_SSL_CERT=${COLLABORA_DONT_GEN_SSL_CERT}
             - extra_params=${COLLABORA_EXTRA_PARAMS}
             - password=${COLLABORA_PASSWORD}
