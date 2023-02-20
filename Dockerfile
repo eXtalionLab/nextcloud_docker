@@ -4,7 +4,7 @@
 
 
 # https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact
-ARG NEXTCLOUD_VERSION=24
+ARG NEXTCLOUD_VERSION=25
 
 
 # "nextcloud" stage
