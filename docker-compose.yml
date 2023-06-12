@@ -52,7 +52,7 @@ services:
             - MYSQL_USER=${MYSQL_USER:-nextcloud}
 
     redis:
-        image: redis:6
+        image: redis:7-alpine
         restart: always
         command: redis-server --requirepass redis_pass
 
