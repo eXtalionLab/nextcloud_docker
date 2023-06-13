@@ -5,6 +5,7 @@
 /initdb.d/*
 
 /docker-compose.*
+/.docker-backup
 /.env
 /*.log
 
