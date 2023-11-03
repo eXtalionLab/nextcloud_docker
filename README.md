@@ -291,7 +291,7 @@ docker-compose up [-d]
 ## Update / Deploy
 
 Setup `COMPOSE_FILE` to `docker-compose.yml:docker-compose.prod.yml`. Also if
-you want to run other services (`elasticsearch`, collabora`, `coturn`) add their
+you want to run other services (`elasticsearch`, `collabora`, `coturn`) add their
 **compose.yml** too. See
 [here](https://docs.docker.com/compose/environment-variables/envvars/#compose_file).
 
