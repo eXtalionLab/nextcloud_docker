@@ -19,6 +19,7 @@ It's a simply as possible `docker-compose` stack to run a
 - [Talk (STUN / TURN)](#talk-stun--turn)
 - [Notify Push](#notify-push)
 - [Reverse proxy](#reverse-proxy)
+- [Backup](#backup)
 - [Update / Deploy](#update--deploy)
 - [Debug](#debug)
 
@@ -287,6 +288,16 @@ Reload docker:
 ```bash
 docker-compose up [-d]
 ```
+
+## Backup
+
+To make a backup we're using a
+[docker-backup](https://github.com/eXtalionLab/docker-backup) tool which use
+[BorgBackup](https://www.borgbackup.org/) under hood.
+
+Create a **.docker-backup** file (use **.docker-backup.dist** as starter file,
+`cp .docker-backup.dist .docker-backup`) and setup values. Refer to
+[documentation](https://github.com/eXtalionLab/docker-backup#docker-backup).
 
 ## Update / Deploy
 
