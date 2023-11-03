@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  nextcloud:
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    build:
+      context: ./docker/elasticsearch
+    image: ${ELASTICSEARCH_IMAGE:-extalion/nextcloud_elasticsearch}
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+volumes:
+  elasticsearch_data:
+    driver: local

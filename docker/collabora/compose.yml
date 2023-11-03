@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  collabora:
+    image: collabora/code
+    restart: always
+    ports:
+      - "127.0.0.1:${COLLABORA_PORT:?COLLABORA_PORT is not set or empty}:9980"
+    environment:
+      - cert_domain=${COLLABORA_CERT_DOMAIN}
+      - dictionaries=${COLLABORA_DICTIONARIES}
+      - aliasgroup1=${COLLABORA_DOMAIN:?COLLABORA_DOMAIN is not set or empty}
+      - DONT_GEN_SSL_CERT=${COLLABORA_DONT_GEN_SSL_CERT}
+      - extra_params=${COLLABORA_EXTRA_PARAMS}
+      - password=${COLLABORA_PASSWORD}
+      - SAL_LOG=${COLLABORA_SAL_LOG}
+      - server_name=${COLLABORA_SERVER_NAME:?COLLABORA_SERVER_NAME is not set or empty}
+      - username=${COLLABORA_USERNAME}
+    cap_add:
+      - MKNOD

@@ -2,7 +2,8 @@
 /.git
 /backup/*
 /db/*
-/initdb/*
+/docker_volumes/*
+/initdb.d/*
 
 /docker-compose.*
 /Dockerfile*

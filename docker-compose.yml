@@ -1,106 +1,64 @@
-version: '3'
+version: '3.4'
 
 services:
-    nextcloud:
-        image: ${NEXTCLOUD_IMAGE}
-        restart: always
-        volumes:
-            - php_socket:/var/run/php
-            - ./apps:/var/www/html/custom_apps
-            - ./config:/var/www/html/config
-            - ./data:/var/www/html/data
-            - ./nextcloud:/var/www/html
-        depends_on:
-            - coturn
-            - db
-            - elasticsearch
-            - redis
-        environment:
-            - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
-            - MYSQL_HOST=db
-            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}
-            - MYSQL_USER=${MYSQL_USER:-nextcloud}
-            - REDIS_HOST=redis
-            - REDIS_HOST_PASSWORD=redis_pass
-            - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
+  nextcloud:
+    restart: always
+    volumes:
+      - php_socket:/var/run/php
+      - ./app-hooks:/docker-entrypoint-hooks.d
+      - ./apps:/var/www/html/custom_apps
+      - ./config:/var/www/html/config
+      - ./data:/var/www/html/data
+      - ./nextcloud:/var/www/html
+    depends_on:
+      - db
+      - redis
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
+      - MYSQL_HOST=db
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}
+      - MYSQL_USER=${MYSQL_USER:-nextcloud}
+      - REDIS_HOST=redis
+      - REDIS_HOST_PASSWORD=${REDIS_HOST_PASSWORD:-!ChangeMe!}
+      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
 
-    nginx:
-        image: ${NGINX_IMAGE}
-        restart: always
-        ports:
-            - "127.0.0.1:${NEXTCLOUD_PORT:?NEXTCLOUD_PORT is not set or empty}:80"
-        volumes:
-            - php_socket:/var/run/php
-            - ./apps:/var/www/html/custom_apps
-            - ./config:/var/www/html/config
-            - ./data:/var/www/html/data
-            - ./nextcloud:/var/www/html
-        depends_on:
-            - nextcloud
+  nginx:
+    build:
+      context: ./docker/nginx
+    restart: always
+    ports:
+      - ${NEXTCLOUD_HOST:-127.0.0.1}:${NEXTCLOUD_PORT:-80}:80
+    volumes:
+      - php_socket:/var/run/php
+      - ./apps:/var/www/html/custom_apps
+      - ./config:/var/www/html/config
+      - ./data:/var/www/html/data
+      - ./nextcloud:/var/www/html
+    depends_on:
+      - nextcloud
 
-    db:
-        image: ${DB_IMAGE}
-        command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
-        restart: always
-        volumes:
-            - ./db:/var/lib/mysql
-            - ./initdb.d:/docker-entrypoint-initdb.d
-        environment:
-            - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
-            - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}
-            - MYSQL_RANDOM_ROOT_PASSWORD='1'
-            - MYSQL_USER=${MYSQL_USER:-nextcloud}
+  db:
+    build:
+      context: ./docker/db
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-nextcloud}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:?MYSQL_PASSWORD is not set or empty}
+      - MYSQL_RANDOM_ROOT_PASSWORD='1'
+      - MYSQL_USER=${MYSQL_USER:-nextcloud}
 
-    redis:
-        image: redis:7-alpine
-        restart: always
-        command: redis-server --requirepass redis_pass
-
-    collabora:
-        image: collabora/code
-        restart: always
-        ports:
-            - "127.0.0.1:${COLLABORA_PORT:?COLLABORA_PORT is not set or empty}:9980"
-        environment:
-            - cert_domain=${COLLABORA_CERT_DOMAIN}
-            - dictionaries=${COLLABORA_DICTIONARIES}
-            - aliasgroup1=${COLLABORA_DOMAIN:?COLLABORA_DOMAIN is not set or empty}
-            - DONT_GEN_SSL_CERT=${COLLABORA_DONT_GEN_SSL_CERT}
-            - extra_params=${COLLABORA_EXTRA_PARAMS}
-            - password=${COLLABORA_PASSWORD}
-            - SAL_LOG=${COLLABORA_SAL_LOG}
-            - server_name=${COLLABORA_SERVER_NAME:?COLLABORA_SERVER_NAME is not set or empty}
-            - username=${COLLABORA_USERNAME}
-        cap_add:
-            - MKNOD
-
-    elasticsearch:
-        image: ${ELASTICSEARCH_IMAGE}
-        restart: always
-        environment:
-            - discovery.type=single-node
-            - bootstrap.memory_lock=true
-            - ES_JAVA_OPTS=-Xms512m -Xmx512m
-        ulimits:
-            memlock:
-                soft: -1
-                hard: -1
-        volumes:
-            - elasticsearch_data:/usr/share/elasticsearch/data
-
-    coturn:
-        image: ${COTURN_IMAGE}
-        restart: always
-        ports:
-            - "${COTURN_PORT:?COTURN_PORT is not set or empty}:3478"
-            - "${COTURN_PORT:?COTURN_PORT is not set or empty}:3478/udp"
-        depends_on:
-            - redis
-        environment:
-            - COTURN_SECRET=${COTURN_SECRET}
-            - COTURN_REALM=${COTURN_REALM}
+  redis:
+    build:
+      context: ./docker/redis
+    restart: always
+    environment:
+      - REDIS_HOST_PASSWORD=${REDIS_HOST_PASSWORD:-!ChangeMe!}
 
 volumes:
-    php_socket:
-    elasticsearch_data:
-        driver: local
+  php_socket:

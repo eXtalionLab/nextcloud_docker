@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  nextcloud:
+    depends_on:
+      - coturn
+
+  coturn:
+    build:
+      context: ./docker/coturn
+    image: ${COTURN_IMAGE:-extalion/nextcloud_coturn}
+    restart: always
+    ports:
+      - "${COTURN_PORT:?COTURN_PORT is not set or empty}:3478"
+      - "${COTURN_PORT:?COTURN_PORT is not set or empty}:3478/udp"
+    depends_on:
+      - redis
+    environment:
+      - COTURN_SECRET=${COTURN_SECRET}
+      - COTURN_REALM=${COTURN_REALM}
+      - REDIS_HOST_PASSWORD=${REDIS_HOST_PASSWORD:-!ChangeMe!}

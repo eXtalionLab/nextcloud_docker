@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  nextcloud:
+    build:
+      context: .
+      target: nextcloud_prod
+    image: ${NEXTCLOUD_IMAGE}
+
+  nginx:
+    image: ${NGINX_IMAGE}
+
+  db:
+    image: ${DB_IMAGE}
+
+  redis:
+    image: ${REDIS_IMAGE}

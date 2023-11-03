@@ -1,0 +1,22 @@
+version: '3.4'
+
+services:
+  nextcloud:
+    build:
+      context: .
+      target: nextcloud_dev
+    volumes:
+      - ./docker/nextcloud/conf.d/nextcloud.dev.ini:/usr/local/etc/php/conf.d/nextcloud.dev.ini:ro
+    environment:
+      - XDEBUG_MODE=${XDEBUG_MODE:-develop}
+      - XDEBUG_CONFIG=
+        cli_color=1
+        client_host=${XDEBUG_HOST:-host.docker.internal}
+        client_port=${XDEBUG_PORT:-9003}
+        log=/var/www/html/data/xdebug.log
+        log_level=${XDEBUG_LOG_LEVEL:-7}
+        idekey=${XDEBUG_IDEKEY:-xdebug}
+      - XDEBUG_SESSION=${XDEBUG_IDEKEY:-xdebug}
+    extra_hosts:
+      # Ensure that host.docker.internal is correctly defined on Linux
+      - host.docker.internal:host-gateway

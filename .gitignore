@@ -4,7 +4,6 @@
 /docker_volumes/*
 /initdb.d/*
 
-/docker-compose.*
 /.docker-backup
 /.env
 /*.log
