@@ -5,7 +5,7 @@
 
 # Versions
 # hadolint ignore=DL3007
-FROM nextcloud:27-fpm AS nextcloud_upstream
+FROM nextcloud:29-fpm AS nextcloud_upstream
 FROM composer/composer:2-bin AS composer_upstream
 FROM mlocati/php-extension-installer AS php_extension_installer_upstream
 
