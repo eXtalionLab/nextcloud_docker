@@ -6,7 +6,7 @@ services:
   coturn:
     build:
       context: ./docker/coturn
-    image: ${COTURN_IMAGE:-extalion/nextcloud_coturn}
+    image: ${IMAGES_PREFIX}-coturn
     restart: always
     ports:
       - "${COTURN_PORT:?COTURN_PORT is not set or empty}:3478"

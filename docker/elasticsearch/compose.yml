@@ -6,7 +6,7 @@ services:
   elasticsearch:
     build:
       context: ./docker/elasticsearch
-    image: ${ELASTICSEARCH_IMAGE:-extalion/nextcloud_elasticsearch}
+    image: ${IMAGES_PREFIX}-elasticsearch
     restart: always
     environment:
       - discovery.type=single-node

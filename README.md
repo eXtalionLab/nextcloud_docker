@@ -143,14 +143,6 @@ To improve search result we can install:
 We have to run `elasticsearch` service. Add `:docker/elasticsearch/compose.yml`
 to `COMPOSE_FILE` environment.
 
-You can also change/setup other environments in **.env** file:
-
-```bash
-###> Elasticsearch ###
-ELASTICSEARCH_IMAGE=extalion/nextcloud_elasticsearch
-###< Elasticsearch ###
-```
-
 Goto [settings](http://localhost:80/settings/admin/fulltextsearch), select
 `Elasticsearch` from select box, as an address type `http://elasticsearch:9200`
 and setup index to `nextcloud_index`.
@@ -232,7 +224,6 @@ You can also change/setup other environments in **.env** file:
 
 ```bash
 ###> Coturn ###
-COTURN_IMAGE=extalion/nextcloud_coturn
 COTURN_PORT=3478
 COTURN_SECRET=CHANGE_ME
 # Your nextcloud domain
@@ -309,7 +300,7 @@ you want to run other services (`elasticsearch`, `collabora`, `coturn`) add thei
 **compose.yml** too. See
 [here](https://docs.docker.com/compose/environment-variables/envvars/#compose_file).
 
-Update images names (**.env** `*_IMAGE`) which point to your hub.
+Update images names prefix (**.env** `IMAGES_PREFIX`) which point to your hub.
 
 Run:
 

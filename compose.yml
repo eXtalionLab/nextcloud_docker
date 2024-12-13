@@ -1,5 +1,6 @@
 services:
   nextcloud:
+    image: ${IMAGES_PREFIX}-app
     restart: always
     volumes:
       - php_socket:/var/run/php
@@ -23,6 +24,7 @@ services:
   nginx:
     build:
       context: ./docker/nginx
+    image: ${IMAGES_PREFIX}-www
     restart: always
     ports:
       - ${NEXTCLOUD_HOST:-127.0.0.1}:${NEXTCLOUD_PORT:-80}:80
@@ -38,6 +40,7 @@ services:
   db:
     build:
       context: ./docker/db
+    image: ${IMAGES_PREFIX}-database
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     restart: always
     ports:
@@ -54,6 +57,7 @@ services:
   redis:
     build:
       context: ./docker/redis
+    image: ${IMAGES_PREFIX}-redis
     restart: always
     environment:
       - REDIS_HOST_PASSWORD=${REDIS_HOST_PASSWORD:-!ChangeMe!}
