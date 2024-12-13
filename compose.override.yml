@@ -6,6 +6,8 @@ services:
     volumes:
       - ./docker/nextcloud/conf.d/nextcloud.dev.ini:/usr/local/etc/php/conf.d/nextcloud.dev.ini:ro
       - ./docker/nextcloud/entrypoint.sh:/nextcloud-entrypoint.sh:ro
+    depends_on:
+      - mailer
     environment:
       - XDEBUG_MODE=${XDEBUG_MODE:-develop}
       - XDEBUG_CONFIG=
@@ -19,3 +21,11 @@ services:
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
+
+  mailer:
+    image: axllent/mailpit
+    ports:
+      - "127.0.0.1:${MAILER_PORT:-8025}:8025"
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1

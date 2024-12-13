@@ -48,6 +48,12 @@ permissions.
 5. Goto [NEXTCLOUD_HOST:NEXTCLOUD_PORT](http://localhost/) domain and play with
 your new cloud.
 
+You can also run command to add "missing" indexes in the database:
+
+```bash
+bin/occ db:add-missing-indices
+```
+
 ### Run installed cloud
 
 When you have a dump of your already installed Nextcloud instance:
@@ -57,6 +63,8 @@ When you have a dump of your already installed Nextcloud instance:
 	- `MYSQL_DATABASE` (`dbname`),
 	- `MYSQL_PASSWORD` (`dbpassword`),
 	- `MYSQL_USER` (`dbuser`),
+	- `NEXTCLOUD_DEFAULT_PHONE_REGION` (`default_phone_region`),
+	- `NEXTCLOUD_MAINTENANCE_WINDOW_START` (`maintenance_window_start`),
 	- `NEXTCLOUD_TRUSTED_DOMAINS` (`trusted_domains`),
 	- `REDIS_HOST_PASSWORD` (`redis.password`).
 They should have the same values as in current **config/config.php**.
@@ -101,6 +109,18 @@ To "increase" performance you can set log level to `error`:
 ```bash
 bin/occ log:manage --level=error
 ```
+
+### Development mailer
+
+In **dev** environment you can use `mailer` service to catch all emails sent. In
+**Basic settings** setup:
+
+- `Send mode` to `SMTP`,
+- `Encryption` to `None`,
+- `From address` to your email address,
+- `Server address` to `mailer` and port to `1025`.
+
+Click `Send email` to test if it works.
 
 ## Improving Nextcloud Previews
 
