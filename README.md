@@ -1,6 +1,6 @@
 # Nextcloud
 
-It's a simply as possible `docker-compose` stack to run a
+It's a simply as possible `docker compose` stack to run a
 [Nextcloud](https://www.nextcloud.com) for **development** and for
 **production**.
 
@@ -26,7 +26,7 @@ It's a simply as possible `docker-compose` stack to run a
 ## Requirements
 
 To run this you just need a [docker](https://www.docker.com/get-started/) and
-[docker-compose](https://github.com/docker/compose#quick-start).
+[docker compose](https://github.com/docker/compose#quick-start).
 
 ## Run
 
@@ -37,11 +37,14 @@ cloud from dump/backup.
 
 When you want to run fresh instance of nextcloud:
 
-1. Create a **.env** file (use **.env.dist** as starter file,
+**Extra!** Create a **.env** file (use **.env.dist** as starter file,
 `cp .env.dist .env`) and setup values.
-2. Run `docker-compose up [-d]`.
-3. Wait for download and build images.
-4. Wait for install a fresh Nextcloud instance.
+
+1. Run `docker compose up [-d]`.
+2. Wait for download and build images.
+3. Wait for install a fresh Nextcloud instance.
+4. Stop (`Ctrl+C`) and run `docker compose up` again to correct setup files
+permissions.
 5. Goto [NEXTCLOUD_HOST:NEXTCLOUD_PORT](http://localhost/) domain and play with
 your new cloud.
 
@@ -56,13 +59,13 @@ When you have a dump of your already installed Nextcloud instance:
 	- `MYSQL_USER` (`dbuser`),
 	- `NEXTCLOUD_TRUSTED_DOMAINS` (`trusted_domains`),
 	- `REDIS_HOST_PASSWORD` (`redis.password`).
-They should have the same values as in **config/config.php**.
+They should have the same values as in current **config/config.php**.
 2. Move your database dump file(s) into **initdb.d/** directory.
 3. Move your config files into **config/** directory.
 4. Move your custom apps into **apps/** directory.
 5. Move your data files into **data/** directory.
 6. Move your nextcloud files into **nextcloud/** directory.
-7. Run `docker-compose up [-d]`.
+7. Run `docker compose up [-d]`.
 8. Wait for download and build images.
 9. Wait when `db` service will load dump file(s) into the database.
 **Note!** When you goto the cloud before database is loaded you will got an
@@ -74,12 +77,12 @@ cloud.
 
 If you want to run **prod**uction environment
 
-1. Uncomment line `#COMPOSE_FILE=docker-compose.yml:docker-compose.prod.yml` in
-**.env** file. It tells to `docker-compose` to use those files instead of
-default **docker-compose.yml** and  **docker-compose.override.yml** (they're
-good for **dev**elopment).
-2. Rebuild images with `docker-compose build [--pull]`.
-3. Run new stack `docker-compose up [-d]`.
+1. Uncomment line `#COMPOSE_FILE=compose.yml:compose.prod.yml` in **.env**
+file. It tells to `docker compose` to use those files instead of default
+**docker compose.yml** and  **docker compose.override.yml** (they're good for
+**dev**elopment).
+2. Rebuild images with `docker compose build [--pull]`.
+3. Run new stack `docker compose up [-d]`.
 
 ### Docker envs
 
@@ -168,10 +171,10 @@ you have to add `nginx` and `collabora` to your **/etc/hosts**:
 127.0.0.1 nginx
 ```
 
-For nextcloud (docker service) collabora is avaliable under `collabora` host and
+For nextcloud (docker service) collabora is available under `collabora` host and
 it has to be the same host for a client (your browser).
 
-For collabora (docker service) nextcloud is avaliable under `nginx` host and you
+For collabora (docker service) nextcloud is available under `nginx` host and you
 have to access nextcloud instance via [http://nginx:$NEXTCLOUD_PORT](http://nginx:80).
 
 ---
@@ -201,7 +204,7 @@ COLLABORA_SERVER_NAME=collabora:9980
 COLLABORA_DOMAIN=nginx
 # Extra loolwsd command line parameter. To learn about all possible options,
 # refer to the self-documented /etc/loolwsd/loolwsd.xml
-#   docker-compose exec collabora cat /etc/loolwsd/loolwsd.xml
+#   docker compose exec collabora cat /etc/loolwsd/loolwsd.xml
 COLLABORA_EXTRA_PARAMS=--o:admin_console.enable=false --o:ssl.enable=false
 # To enable the admin console feature of CODE remove admin_console.enbale option
 # $COLLABORA_SERVER_NAME/loleaflet/dist/admin/admin.html
@@ -248,7 +251,7 @@ Goto [settings](http://localhost:80/settings/admin/talk) and set:
 To configure [notify_push](https://github.com/nextcloud/notify_push) app:
 
 - Install the `notify_push` app from the appstore,
-- Restart `nextcloud` service (`docker-compose restart nextcloud`),
+- Restart `nextcloud` service (`docker compose restart nextcloud`),
 - set the url of the push server (`bin/occ notify_push:setup http://domain/push`)
 
 If you got **push server is not a trusted proxy** then you have to add displayed
@@ -256,7 +259,7 @@ proxies in **config/config.php** to `trusted_proxies`.
 
 ## Reverse proxy
 
-Basic nginx configuration for reverse proxy is avaliable
+Basic nginx configuration for reverse proxy is available
 [here](https://www.digitalocean.com/community/tools/nginx?domains.0.server.domain=nextcloud.example.com&domains.0.server.redirectSubdomains=false&domains.0.https.hstsPreload=true&domains.0.php.php=false&domains.0.reverseProxy.reverseProxy=true&domains.0.reverseProxy.proxyPass=http%3A%2F%2F127.0.0.1%3A%24NEXTCLOUD_PORT&domains.0.routing.root=false&domains.0.logging.accessLog=true&domains.0.logging.errorLog=true&domains.1.server.domain=collabora.example.com&domains.1.server.redirectSubdomains=false&domains.1.https.hstsPreload=true&domains.1.php.php=false&domains.1.reverseProxy.reverseProxy=true&domains.1.reverseProxy.proxyPass=http%3A%2F%2F127.0.0.1%3A%24COLLABORA_PORT&domains.1.routing.root=false&domains.1.logging.accessLog=true&domains.1.logging.errorLog=true).
 
 Update `Server > Domain` names and `Reverse proxy > proxy_pass` ports (read
@@ -264,7 +267,7 @@ ports from your **.env** file).
 
 Remove `include nginxconfig.io/security.conf;` from nextcloud domain conf.
 Docker nginx service conf is build base on
-[Nextcloud example](https://github.com/nextcloud/docker/blob/master/.examples/docker-compose/insecure/mariadb-cron-redis/fpm/web/nginx.conf).
+[Nextcloud example](https://github.com/nextcloud/docker/blob/master/.examples/docker compose/insecure/mariadb-cron-redis/fpm/web/nginx.conf).
 
 In **.env** file you have to change:
 
@@ -286,7 +289,7 @@ If you have setup collabora online, you have to update
 Reload docker:
 
 ```bash
-docker-compose up [-d]
+docker compose up [-d]
 ```
 
 ## Backup
@@ -301,7 +304,7 @@ Create a **.docker-backup** file (use **.docker-backup.dist** as starter file,
 
 ## Update / Deploy
 
-Setup `COMPOSE_FILE` to `docker-compose.yml:docker-compose.prod.yml`. Also if
+Setup `COMPOSE_FILE` to `docker compose.yml:docker compose.prod.yml`. Also if
 you want to run other services (`elasticsearch`, `collabora`, `coturn`) add their
 **compose.yml** too. See
 [here](https://docs.docker.com/compose/environment-variables/envvars/#compose_file).
@@ -311,20 +314,20 @@ Update images names (**.env** `*_IMAGE`) which point to your hub.
 Run:
 
 ```bash
-docker-compose build --pull
+docker compose build --pull
 ```
 
 If you didn't build images on the server run:
 
 ```bash
-docker-compose push
+docker compose push
 ```
 
 On the server run:
 
 ```bash
-docker-compose pull
-docker-compose up -d
+docker compose pull
+docker compose up -d
 ```
 
 ## Debug
@@ -333,6 +336,6 @@ If you want to debug a cloud with [xdebug](https://xdebug.org/):
 
 - be sure you're running **dev** environment (and images),
 - add/setup `debug` to `XDEBUG_MODE`,
-- reload docker with `docker-compose up -d`.
+- reload docker with `docker compose up -d`.
 
 Now you're ready to remote debugging.

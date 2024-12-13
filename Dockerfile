@@ -76,6 +76,10 @@ EXPOSE 7867
 
 ENV NEXTCLOUD_UPDATE=1
 
+COPY docker/nextcloud/entrypoint.sh /nextcloud-entrypoint.sh
+RUN chmod +x /nextcloud-entrypoint.sh
+
+ENTRYPOINT ["/nextcloud-entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]
 
 # Dev nextcloud image

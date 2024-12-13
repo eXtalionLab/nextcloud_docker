@@ -5,6 +5,7 @@ services:
       target: nextcloud_dev
     volumes:
       - ./docker/nextcloud/conf.d/nextcloud.dev.ini:/usr/local/etc/php/conf.d/nextcloud.dev.ini:ro
+      - ./docker/nextcloud/entrypoint.sh:/nextcloud-entrypoint.sh:ro
     environment:
       - XDEBUG_MODE=${XDEBUG_MODE:-develop}
       - XDEBUG_CONFIG=
